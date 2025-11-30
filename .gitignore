@@ -28,6 +28,7 @@ Thumbs.db
 # Logs
 logs/
 *.log
+src/utils/logger.ts
 
 # Coverage / testing
 coverage/
