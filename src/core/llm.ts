@@ -45,9 +45,8 @@ export async function generateCommitMessage(diff: string): Promise<string> {
   const message =
     data?.candidates?.[0]?.content?.parts?.[0]?.text ?? null;
 
-  if (!message) {
+  if (!message)
     throw new Error("Failed to generate commit message: empty response from Google API");
-  }
 
   return message.trim();
 }
