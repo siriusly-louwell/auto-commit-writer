@@ -1,0 +1,7 @@
+Write a clean and structured commit message summarizing the following diff.
+Follow the Conventional Commits format.
+
+DIFF:
+{{diff}}
+
+Output only the commit message. Do not add commentary.

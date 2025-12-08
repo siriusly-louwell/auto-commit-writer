@@ -1,0 +1,9 @@
+Generate a pull request description summarizing the following diff.
+Include:
+
+- Summary of changes
+- Impact
+- Testing notes
+
+DIFF:
+{{diff}}

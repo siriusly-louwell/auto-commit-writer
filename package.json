@@ -1,6 +1,7 @@
 {
   "name": "auto-commit-writer",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,7 +13,10 @@
   "dependencies": {
     "commander": "^14.0.2",
     "openai": "^6.9.1",
-    "ts": "^0.2.2",
+    "simple-git": "^3.30.0",
     "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1"
   }
 }
