@@ -1,7 +1,9 @@
 import { readFileSync } from "fs";
 import { resolve } from "path";
+import { fileURLToPath } from "url";
 
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
+const __dirname = resolve(fileURLToPath(import.meta.url), "..");
 
 function loadPrompt(name: string): string {
   const file = resolve(__dirname, "..", "prompts", `${name}.prompt.txt`);
