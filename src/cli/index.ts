@@ -1,7 +1,7 @@
 import { program } from "commander";
-import { getDiff } from "../core/diff";
-import { generateCommitMessage } from "../core/llm";
-import { log } from "../utils/logger";
+import { getDiff } from "../core/diff.js";
+import { generateCommitMessage } from "../core/llm.js";
+import { log } from "../utils/logger.js";
 
 program
   .name("commitgen")
