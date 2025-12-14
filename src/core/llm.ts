@@ -15,7 +15,7 @@ export async function generateCommitMessage(diff: string): Promise<string> {
     throw new Error("Missing GOOGLE_API_KEY in environment variables");
   }
 
-  const template = loadPrompt("commit.prompt");
+  const template = loadPrompt("commit");
   const content = template.replace("{{diff}}", diff);
 
   const response = await fetch(
