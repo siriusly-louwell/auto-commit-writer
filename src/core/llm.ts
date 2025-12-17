@@ -42,13 +42,23 @@ export async function generateCommitMessage(diff: string): Promise<string> {
     }
   );
 
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Gemini HTTP ${response.status}: ${errorText}`);
+  }
+
   const data = await response.json();
 
   const message =
-    data?.candidates?.[0]?.content?.parts?.[0]?.text ?? null;
+    data?.candidates?.[0]?.content?.parts
+      ?.map((p: any) => p.text)
+      .join("") ?? null;
 
-  if (!message)
-    throw new Error("Failed to generate commit message: empty response from Google API");
+  if (!message) {
+    throw new Error(
+      `Gemini returned no text. Full response:\n${JSON.stringify(data, null, 2)}`
+    );
+  }
 
   return message.trim();
 }
