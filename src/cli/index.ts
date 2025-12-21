@@ -31,16 +31,19 @@ async function executeGeneration(
 program
   .command("commit")
   .description("Generate a commit message from the current diff.")
+  .option("--context <text>", "Additional context for the generation")
   .action(() => executeGeneration("commit", "Commit Message"));
 
 program
   .command("changelog")
   .description("Generate changelog from the current diff.")
+  .option("--context <text>", "Additional context for the generation")
   .action(() => executeGeneration("changelog", "Changelog"));
 
 program
   .command("pr")
   .description("Generate a PR description from the current diff.")
+  .option("--context <text>", "Additional context for the generation")
   .action(() => executeGeneration("pr", "Pull Request description"));
 
 program.parse();

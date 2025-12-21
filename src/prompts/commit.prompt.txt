@@ -18,3 +18,6 @@ Input diff:
 
 Output:
 A single, well-formed commit message only.
+
+Additional context:
+{{context}}

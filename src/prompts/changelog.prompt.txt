@@ -28,3 +28,6 @@ Input diff:
 
 Output:
 A clean changelog entry only.
+
+Additional context:
+{{context}}

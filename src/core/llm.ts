@@ -11,12 +11,19 @@ function loadPrompt(name: string): string {
   return readFileSync(file, "utf8");
 }
 
-export async function generateCommitMessage(diff: string, promptType: "commit" | "changelog" | "pr" = "commit"): Promise<string> {
+export async function generateCommitMessage(
+  diff: string,
+  promptType: "commit" | "changelog" | "pr" = "commit",
+  context?: string
+): Promise<string> {
   if (!GOOGLE_API_KEY)
     throw new Error("Missing GOOGLE_API_KEY in environment variables");
 
-  const template = loadPrompt("commit");
-  const content = template.replace("{{diff}}", diff);
+  const template = loadPrompt(promptType);
+  let content = template.replace("{{diff}}", diff);
+
+  if (context) content = content.replace("{{context}}", context);
+  else content = content.replace("{{context}}", "");
 
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GOOGLE_API_KEY}`,

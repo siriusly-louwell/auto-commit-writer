@@ -24,3 +24,6 @@ Input diff:
 
 Output:
 A complete pull request description only.
+
+Additional context:
+{{context}}
