@@ -11,7 +11,7 @@ function loadPrompt(name: string): string {
   return readFileSync(file, "utf8");
 }
 
-export async function generateCommitMessage(diff: string): Promise<string> {
+export async function generateCommitMessage(diff: string, promptType: "commit" | "changelog" | "pr" = "commit"): Promise<string> {
   if (!GOOGLE_API_KEY)
     throw new Error("Missing GOOGLE_API_KEY in environment variables");
 
