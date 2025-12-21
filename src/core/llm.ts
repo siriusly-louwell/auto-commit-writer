@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { readFileSync } from "fs";
 import { resolve } from "path";
 import { fileURLToPath } from "url";
@@ -11,15 +12,14 @@ function loadPrompt(name: string): string {
 }
 
 export async function generateCommitMessage(diff: string): Promise<string> {
-  if (!GOOGLE_API_KEY) {
+  if (!GOOGLE_API_KEY)
     throw new Error("Missing GOOGLE_API_KEY in environment variables");
-  }
 
   const template = loadPrompt("commit");
   const content = template.replace("{{diff}}", diff);
 
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GOOGLE_API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GOOGLE_API_KEY}`,
     {
       method: "POST",
       headers: {
