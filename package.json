@@ -5,9 +5,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "ts-node src/cli/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc && npm run copy-prompts",
-    "copy-prompts": "xcopy src\\prompts dist\\prompts /E /I /Y"
+    "copy-prompts": "xcopy src\\prompts dist\\prompts /E /I /Y",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [],
   "author": "",

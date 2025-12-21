@@ -1,7 +1,20 @@
-Write a clean and structured commit message summarizing the following diff.
-Follow the Conventional Commits format.
+You are generating a Git commit message.
 
-DIFF:
+Rules:
+- Follow the Conventional Commits specification exactly.
+- Use the format: <type>(optional-scope): <imperative summary>
+- Use imperative present tense (e.g., "add", not "added").
+- Keep the subject line under 72 characters.
+- Include a body only if it adds meaningful context.
+- The body must explain WHY the change was made, not WHAT changed.
+- Do not include emojis, markdown, or code blocks.
+- Do not include any commentary, explanations, or labels.
+
+Allowed types:
+feat, fix, refactor, perf, docs, test, chore, ci, build
+
+Input diff:
 {{diff}}
 
-Output only the commit message. Do not add commentary.
+Output:
+A single, well-formed commit message only.

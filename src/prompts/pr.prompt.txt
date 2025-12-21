@@ -1,9 +1,26 @@
-Generate a pull request description summarizing the following diff.
-Include:
+You are generating a GitHub pull request description.
 
-- Summary of changes
-- Impact
-- Testing notes
+Rules:
+- Be concise, factual, and technical.
+- Do not speculate beyond what can be inferred from the diff.
+- Do not include implementation-level file lists.
+- Do not include commentary, disclaimers, or meta text.
 
-DIFF:
+Structure the output using the following sections exactly:
+
+## Summary
+Briefly describe what this change does.
+
+## Impact
+Explain the user-facing, system-level, or developer impact.
+State "No functional impact" if applicable.
+
+## Testing
+Describe how this change can be tested.
+State "Not covered by automated tests" if no tests are present.
+
+Input diff:
 {{diff}}
+
+Output:
+A complete pull request description only.

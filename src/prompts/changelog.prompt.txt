@@ -1,0 +1,30 @@
+You are generating a changelog entry from a Git diff.
+
+Rules:
+- Use clear, concise, user-facing language.
+- Do not describe internal refactors unless they affect behavior.
+- Do not speculate beyond what can be inferred from the diff.
+- Do not reference commits, PR numbers, file names, or code symbols.
+- Do not include commentary, explanations, or meta text.
+- Prefer verbs like "Added", "Fixed", "Changed", "Removed".
+
+Structure the output using the following sections exactly.
+Include a section only if applicable.
+
+### Added
+- New user-facing features or capabilities.
+
+### Fixed
+- Bug fixes or corrections to existing behavior.
+
+### Changed
+- Behavior changes that are not strictly fixes.
+
+### Removed
+- Deprecated or removed functionality.
+
+Input diff:
+{{diff}}
+
+Output:
+A clean changelog entry only.
