@@ -39,7 +39,6 @@ async function executeGeneration(
     const message = await generateCommitMessage(diff, promptType);
     log(`\nGenerated ${outputLabel}:\n`, "info");
     console.log(message);
-    log(`${options?.autoCommit}`, "error");
 
     if (options?.autoCommit && promptType === "commit") {
       await stageAndCommit(message);
@@ -70,4 +69,3 @@ program
 
 program.parse();
 
-// ?
