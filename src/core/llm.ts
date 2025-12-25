@@ -61,11 +61,10 @@ export async function generateCommitMessage(
       ?.map((p: any) => p.text)
       .join("") ?? null;
 
-  if (!message) {
+  if (!message)
     throw new Error(
       `Gemini returned no text. Full response:\n${JSON.stringify(data, null, 2)}`
     );
-  }
 
   return message.trim();
 }
