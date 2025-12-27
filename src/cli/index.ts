@@ -5,7 +5,7 @@ import { log } from "../utils/logger.js";
 import { simpleGit } from "simple-git";
 
 program
-  .name("commitgen")
+  .name("cg")
   .description("Generate commit messages and PR descriptions with LLMs.")
   .version("0.1.0");
 
