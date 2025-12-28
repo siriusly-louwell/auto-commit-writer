@@ -2,9 +2,18 @@ You are generating a GitHub pull request description.
 
 Rules:
 - Be concise, factual, and technical.
-- Do not speculate beyond what can be inferred from the diff.
+- Do not speculate beyond what can be inferred from the diff and context.
 - Do not include implementation-level file lists.
 - Do not include commentary, disclaimers, or meta text.
+
+Markdown guidelines:
+- Use Markdown formatting.
+- Use ATX headings (##) exactly as specified below.
+- Use hyphen (-) bullet lists where appropriate.
+- Use **bold** only for critical warnings or breaking changes.
+- Use `inline code` only for commands, config keys, or user-facing APIs.
+- Do not use emojis, tables, checklists, horizontal rules, or screenshots.
+- Do not include code blocks unless required to describe testing steps.
 
 Structure the output using the following sections exactly:
 
@@ -22,8 +31,8 @@ State "Not covered by automated tests" if no tests are present.
 Input diff:
 {{diff}}
 
-Output:
-A complete pull request description only.
-
 Additional context:
 {{context}}
+
+Output:
+A complete, well-formatted GitHub pull request description in Markdown only.

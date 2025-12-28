@@ -1,21 +1,26 @@
 # AI-Powered Commit Message & PR Assistant
 
-A TypeScript-powered tool that automatically generates clean **commit messages**, **pull-request descriptions**, as well as **changelog entries** directly from your diffs.
+A TypeScript-powered tool that automatically generates clean **commit messages**, **pull-request descriptions**, and **changelog entries** directly from your diffs. Now also available as an **installable npm package** with automated commit capabilities.
 
-This project can be used as a **drop-in script** or as the foundation for a future **VS Code extension**.
+This project can be used as a **drop-in script**, a **CLI tool**, or as the foundation for a **VS Code extension**.
 
 ## Features
 
+- Installable as an **npm package** for easy CLI usage
+- **Auto commit** support for streamlined workflows
+- Add **context** for more precise and relevant message generation
+- Generate:
+  - Commit messages
+  - Pull request descriptions
+  - Changelog entries
 - Parses git diffs with consistent rules
-- Generates concise and structured commit messages
-- Produces PR descriptions with summaries, change lists, and context
-- Creates changelog-ready entries
+- Produces concise, structured, and conventional outputs
 - Designed for lightweight automation in existing workflows
 - Fully written in TypeScript
 
 ## Why It Exists
 
-Writing commit messages and PR descriptions is repetitive. This tool speeds up your workflow by turning raw diffs into readable, conventional outputs while keeping quality and structure consistent across projects.
+Writing commit messages, PR descriptions, and changelogs is repetitive and time-consuming. This tool speeds up your workflow by turning raw diffs into readable, structured, and consistent outputs, reducing human error and maintaining high quality across projects.
 
 ## Tech Stack
 
