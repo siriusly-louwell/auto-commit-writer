@@ -17,7 +17,6 @@ export async function getCommitHistory(
   head: string = "HEAD"
 ): Promise<string> {
   try {
-    // Get list of commits between base and head
     const log = await git.log({
       from: base,
       to: head,
@@ -25,7 +24,6 @@ export async function getCommitHistory(
 
     if (log.all.length === 0) throw new Error(`No commits found between ${base} and ${head}`);
 
-    // Build a comprehensive history with commit messages and diffs
     let history = "";
 
     for (const commit of log.all) {
@@ -36,7 +34,6 @@ export async function getCommitHistory(
       history += `\n${commit.message}\n`;
       history += `\n${"-".repeat(80)}\n`;
 
-      // Get the diff for this specific commit
       const diff = await git.show([commit.hash, "--format="]);
       history += diff;
     }

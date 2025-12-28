@@ -61,13 +61,8 @@ async function executePRGeneration(options: {
 
     let content: string;
 
-    if (options.includeCommits) {
-      // Get full commit history with diffs (more comprehensive but larger)
-      content = await getCommitHistory(base, "HEAD");
-    } else {
-      // Get just the combined diff (lighter weight, default)
-      content = await getDiffBetween(base, "HEAD");
-    }
+    if (options.includeCommits) content = await getCommitHistory(base, "HEAD");
+    else content = await getDiffBetween(base, "HEAD");
 
     if (!content.trim()) {
       log(`No changes detected between ${base} and HEAD.`, "warn");
