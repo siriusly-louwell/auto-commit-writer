@@ -8,6 +8,8 @@ This project can be used as a **drop-in script**, a **CLI tool**, or as the foun
 
 - Installable as an **npm package** for easy CLI usage
 - **Auto commit** support for streamlined workflows
+- **AI adapter** system for flexible LLM provider integration
+- **Refactored PR description generation** for improved quality and consistency
 - Add **context** for more precise and relevant message generation
 - Generate:
   - Commit messages
@@ -27,8 +29,18 @@ Writing commit messages, PR descriptions, and changelogs is repetitive and time-
 - TypeScript
 - Node.js
 - Git diff parsing
-- OpenAI/LLM API (or other model providers)
+- AI adapter system supporting multiple LLM providers (OpenAI, Anthropic, etc.)
 - Optional VS Code extension scaffolding
+
+## What's New
+
+### AI Adapter
+
+The new AI adapter architecture provides a flexible, provider-agnostic interface for integrating with different LLM services. Switch between OpenAI, Anthropic Claude, or other providers without changing your core logic.
+
+### PR Description Refactor
+
+Enhanced pull request description generation with improved structure, better context awareness, and more consistent formatting across different types of changes.
 
 ## Roadmap
 
@@ -37,3 +49,4 @@ Writing commit messages, PR descriptions, and changelogs is repetitive and time-
 - Support for Conventional Commits
 - Batch processing for multi-commit diffs
 - Changelog file auto-updater
+- Additional AI provider support

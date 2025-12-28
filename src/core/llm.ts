@@ -5,7 +5,6 @@ import { fileURLToPath } from "url";
 import type { AIConfig } from "../types.js";
 import { callAI } from "./aiAdapter.js";
 
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 const __dirname = resolve(fileURLToPath(import.meta.url), "..");
 
 function getConfig(): AIConfig {
@@ -33,7 +32,6 @@ export async function generateCommitMessage(
   promptType: "commit" | "changelog" | "pr" = "commit",
   context?: string
 ): Promise<string> {
-  if (!GOOGLE_API_KEY) throw new Error("Missing GOOGLE_API_KEY in environment variables");
 
   const template = loadPrompt(promptType);
   let content = template.replace("{{diff}}", diff);
