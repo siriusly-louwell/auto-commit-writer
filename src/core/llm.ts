@@ -2,9 +2,26 @@ import "dotenv/config";
 import { readFileSync } from "fs";
 import { resolve } from "path";
 import { fileURLToPath } from "url";
+import type { AIConfig } from "../types.js";
+import { callAI } from "./aiAdapter.js";
 
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 const __dirname = resolve(fileURLToPath(import.meta.url), "..");
+
+function getConfig(): AIConfig {
+  const provider = process.env.AI_PROVIDER as 'gemini' | 'openai' | 'anthropic';
+
+  const apiKeyMap = {
+    gemini: process.env.GEMINI_API_KEY,
+    openai: process.env.OPENAI_API_KEY,
+    anthropic: process.env.ANTHROPIC_API_KEY
+  };
+
+  const apiKey = apiKeyMap[provider];
+  if (!apiKey) throw new Error(`API key not found for provider: ${provider}`);
+
+  return { provider, apiKey };
+}
 
 function loadPrompt(name: string): string {
   const file = resolve(__dirname, "..", "prompts", `${name}.prompt.txt`);
@@ -29,46 +46,5 @@ export async function generateCommitMessage(
   if (context) content = content.replace("{{context}}", context);
   else content = content.replace("{{context}}", "");
 
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GOOGLE_API_KEY}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              {
-                text: [
-                  systemPrompts[promptType],
-                  content
-                ].join("\n\n")
-              }
-            ]
-          }
-        ]
-      })
-    }
-  );
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Gemini HTTP ${response.status}: ${errorText}`);
-  }
-
-  const data = await response.json();
-
-  const message =
-    data?.candidates?.[0]?.content?.parts
-      ?.map((p: any) => p.text)
-      .join("") ?? null;
-
-  if (!message)
-    throw new Error(
-      `Gemini returned no text. Full response:\n${JSON.stringify(data, null, 2)}`
-    );
-
-  return message.trim();
+  return await callAI(getConfig(), systemPrompts[promptType], content);
 }
