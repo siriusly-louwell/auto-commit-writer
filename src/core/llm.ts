@@ -16,11 +16,15 @@ export async function generateCommitMessage(
   promptType: "commit" | "changelog" | "pr" = "commit",
   context?: string
 ): Promise<string> {
-  if (!GOOGLE_API_KEY)
-    throw new Error("Missing GOOGLE_API_KEY in environment variables");
+  if (!GOOGLE_API_KEY) throw new Error("Missing GOOGLE_API_KEY in environment variables");
 
   const template = loadPrompt(promptType);
   let content = template.replace("{{diff}}", diff);
+  const systemPrompts: Record<typeof promptType, string> = {
+    commit: "You write clean, concise commit messages following conventional commit format.",
+    changelog: "You write clear, user-friendly changelogs that highlight important changes.",
+    pr: "You write comprehensive PR descriptions that summarize the purpose, changes, and impact of multiple commits. Focus on the overall goal and key changes, not individual commit details."
+  };
 
   if (context) content = content.replace("{{context}}", context);
   else content = content.replace("{{context}}", "");
@@ -38,7 +42,7 @@ export async function generateCommitMessage(
             parts: [
               {
                 text: [
-                  "You write clean, concise commit messages.",
+                  systemPrompts[promptType],
                   content
                 ].join("\n\n")
               }

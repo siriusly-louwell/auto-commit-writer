@@ -1,5 +1,5 @@
 import { program } from "commander";
-import { getDiff } from "../core/diff.js";
+import { getDiff, getCommitHistory, getDiffBetween } from "../core/diff.js";
 import { generateCommitMessage } from "../core/llm.js";
 import { log } from "../utils/logger.js";
 import { simpleGit } from "simple-git";
@@ -23,9 +23,9 @@ async function stageAndCommit(commitMessage: string): Promise<void> {
   }
 }
 
-// ? Shared action handler
+// ? Shared action handler for commit and changelog
 async function executeGeneration(
-  promptType: "commit" | "changelog" | "pr",
+  promptType: "commit" | "changelog",
   outputLabel: string,
   options?: { autoCommit?: boolean }
 ): Promise<void> {
@@ -48,12 +48,55 @@ async function executeGeneration(
   }
 }
 
+// ? PR-specific handler using commit history
+async function executePRGeneration(options: {
+  base?: string;
+  context?: string;
+  includeCommits?: boolean;
+}): Promise<void> {
+  try {
+    const base = options.base || "origin/main";
+
+    log(`Fetching changes from ${base} to HEAD...`, "info");
+
+    let content: string;
+
+    if (options.includeCommits) {
+      // Get full commit history with diffs (more comprehensive but larger)
+      content = await getCommitHistory(base, "HEAD");
+    } else {
+      // Get just the combined diff (lighter weight, default)
+      content = await getDiffBetween(base, "HEAD");
+    }
+
+    if (!content.trim()) {
+      log(`No changes detected between ${base} and HEAD.`, "warn");
+      log(`Make sure you've committed your changes and that ${base} exists.`, "info");
+      return;
+    }
+
+    log("Generating PR description...", "info");
+    const prDescription = await generateCommitMessage(
+      content,
+      "pr",
+      options.context
+    );
+
+    log("\nGenerated Pull Request Description:\n", "info");
+    console.log(prDescription);
+  } catch (e: any) {
+    log(e.message || "Unknown error", "error");
+  }
+}
+
 program
   .command("commit")
   .description("Generate a commit message from the current diff.")
   .option("--context <text>", "Additional context for the generation")
   .option("--auto-commit", "Automatically stage and commit changes")
-  .action((opt) => executeGeneration("commit", "Commit Message", { autoCommit: opt.autoCommit }));
+  .action((opt) =>
+    executeGeneration("commit", "Commit Message", { autoCommit: opt.autoCommit })
+  );
 
 program
   .command("changelog")
@@ -63,9 +106,23 @@ program
 
 program
   .command("pr")
-  .description("Generate a PR description from the current diff.")
+  .description("Generate a PR description from multiple commits.")
+  .option(
+    "--base <branch>",
+    "Base branch to compare against (default: origin/main)",
+    "origin/main"
+  )
   .option("--context <text>", "Additional context for the generation")
-  .action(() => executeGeneration("pr", "Pull Request description"));
+  .option(
+    "--include-commits",
+    "Include individual commit messages in the analysis (more comprehensive)"
+  )
+  .action((opt) =>
+    executePRGeneration({
+      base: opt.base,
+      context: opt.context,
+      includeCommits: opt.includeCommits,
+    })
+  );
 
 program.parse();
-
