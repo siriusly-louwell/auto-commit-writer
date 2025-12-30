@@ -6,8 +6,8 @@ import { simpleGit } from "simple-git";
 
 program
   .name("cg")
-  .description("Generate commit messages and PR descriptions with LLMs.")
-  .version("0.1.0");
+  .description("AI-powered commit messages, PR descriptions, and changelog generation - all from your command line.")
+  .version("0.1.3");
 
 const git = simpleGit();
 
