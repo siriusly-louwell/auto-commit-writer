@@ -32,8 +32,40 @@ If the diff includes breaking changes:
 - Include migration guidance if evident from the diff
 - Use clear, direct language: "Removed X feature" not "X is no longer supported"
 
+## Commit Linking
+{{#if repo_url}}
+When referencing commits, format them as:
+- Use 7-character short hash: `abc1234`
+- If the commit is particularly significant, you may link it: [abc1234]({{repo_url}}/commit/FULL_HASH)
+- Link only important commits (breaking changes, major features), not every commit
+{{/if}}
+
+## Target Audience
+{{#if audience}}
+Target audience: {{audience}}
+{{#if audience == "technical"}}
+- Include technical details and implementation notes
+- Reference APIs, methods, and technical concepts
+- Assume familiarity with the codebase
+{{/if}}
+{{#if audience == "end-user"}}
+- Focus purely on user-visible changes
+- Avoid technical jargon completely
+- Explain impact in plain language
+{{/if}}
+{{#if audience == "both"}}
+- Start with user-facing impact
+- Include technical details in parentheses when relevant
+- Balance accessibility with technical accuracy
+{{/if}}
+{{/if}}
+
 ## Section Structure
 Include sections only if applicable, in this exact order:
+
+{{#if version}}
+## [{{version}}] - {{date_range}}
+{{/if}}
 
 ### Breaking Changes
 - Changes that break backward compatibility
@@ -71,6 +103,11 @@ Include sections only if applicable, in this exact order:
 - Features or functionality completely removed
 - Dropped support for platforms, versions, or formats
 
+{{#if contributors}}
+### Contributors
+{{contributors}}
+{{/if}}
+
 ## Style Examples
 
 Good:
@@ -102,14 +139,6 @@ Input diff:
 
 Additional context:
 {{context}}
-
-{{#if version}}
-Target version: {{version}}
-{{/if}}
-
-{{#if breaking_detected}}
-⚠️ Breaking changes detected in commits. Ensure they are properly documented.
-{{/if}}
 
 Output:
 A clean, well-formatted changelog entry in Markdown following the structure above. Include only applicable sections with relevant changes.
