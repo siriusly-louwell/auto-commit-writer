@@ -1,33 +1,115 @@
-You are generating a changelog entry from a Git diff.
+You are generating a changelog entry from Git changes for end users.
 
-Rules:
-- Use clear, concise, user-facing language.
-- Do not describe internal refactors unless they affect behavior.
-- Do not speculate beyond what can be inferred from the diff.
-- Do not reference commits, PR numbers, file names, or code symbols.
-- Do not include commentary, explanations, or meta text.
-- Prefer verbs like "Added", "Fixed", "Changed", "Removed".
+## Core Principles
+- **User impact first**: Explain what changed for users, not how it was implemented
+- **Clear and actionable**: Users should understand if they need to take action
+- **Concise but complete**: Include enough detail to understand the change
+- **Observable behavior only**: Focus on what users can see, use, or experience
 
-Structure the output using the following sections exactly.
-Include a section only if applicable.
+## Content Rules
+- Use clear, user-facing language without technical jargon
+- Translate technical changes into user benefits (e.g., "optimized query" → "Improved loading speed")
+- Group related changes into single, cohesive entries
+- Do not describe internal refactors unless they affect observable behavior
+- Do not reference file names, code symbols, class names, or implementation details
+- Do not speculate beyond what can be inferred from the diff and context
+- Exclude infrastructure, testing, or documentation-only changes unless user-facing
+
+## Formatting Guidelines
+- Use Markdown formatting only
+- Use ATX headings (###) exactly as defined in the structure below
+- Use hyphen (-) for bullet lists only
+- Start each bullet with a verb: "Added", "Fixed", "Changed", "Removed", "Improved", "Updated"
+- Use sentence case, not title case
+- Do not use: bold, italics, inline code, tables, emojis, checklists, or code blocks
+- Do not include empty sections
+- Do not add commentary, explanations, or meta text outside the changelog format
+
+## Breaking Changes
+If the diff includes breaking changes:
+- Place them in a dedicated "Breaking Changes" section at the top
+- Explain what breaks and why
+- Include migration guidance if evident from the diff
+- Use clear, direct language: "Removed X feature" not "X is no longer supported"
+
+## Section Structure
+Include sections only if applicable, in this exact order:
+
+### Breaking Changes
+- Changes that break backward compatibility
+- Removed features or deprecated functionality with impact
+- API changes that require user action
+- Format: "Changed X to Y. Update your usage from [old way] to [new way]."
+
+### Security
+- Security vulnerability fixes
+- Permission or access control changes
+- Authentication or authorization updates
 
 ### Added
-- New user-facing features or capabilities.
+- New user-facing features or capabilities
+- New configuration options users can leverage
+- New supported platforms, formats, or integrations
 
 ### Fixed
-- Bug fixes or corrections to existing behavior.
+- Bug fixes that resolve incorrect behavior
+- Resolved errors, crashes, or failures
+- Corrections to existing functionality
 
 ### Changed
-- Behavior changes that are not strictly fixes.
+- Behavior modifications that aren't strictly fixes
+- Improved performance or efficiency users will notice
+- Updated defaults or configurations
+- Modified UI/UX elements
+
+### Deprecated
+- Features marked for future removal
+- Include timeline if available: "Deprecated X. Will be removed in version Y."
+- Suggest alternatives if present in the diff
 
 ### Removed
-- Deprecated or removed functionality.
+- Features or functionality completely removed
+- Dropped support for platforms, versions, or formats
+
+## Style Examples
+
+Good:
+- "Added dark mode theme option in settings"
+- "Fixed crash when uploading files larger than 10MB"
+- "Improved search performance by 3x for large datasets"
+- "Changed default timeout from 30s to 60s to reduce errors"
+
+Bad:
+- "Refactored UserService class" (too technical)
+- "Updated dependencies in package.json" (internal)
+- "Fixed bug in authentication.ts:line 45" (references code)
+- "Made some improvements to the UI" (too vague)
+
+## Combining Related Changes
+When multiple commits address the same feature or area:
+- Merge into one entry: "Improved search with autocomplete, filters, and sorting"
+- Not separate: "Added autocomplete", "Added filters", "Added sorting"
+
+## Handling Ambiguity
+- If unsure whether a change is user-facing, exclude it
+- If uncertain about impact level, err on the side of being more concise
+- If the change purpose is unclear from the diff, describe only the observable behavior
+
+---
 
 Input diff:
 {{diff}}
 
-Output:
-A clean changelog entry only.
-
 Additional context:
 {{context}}
+
+{{#if version}}
+Target version: {{version}}
+{{/if}}
+
+{{#if breaking_detected}}
+⚠️ Breaking changes detected in commits. Ensure they are properly documented.
+{{/if}}
+
+Output:
+A clean, well-formatted changelog entry in Markdown following the structure above. Include only applicable sections with relevant changes.
