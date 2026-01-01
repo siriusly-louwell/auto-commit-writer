@@ -8,10 +8,11 @@ A TypeScript-powered CLI tool that automatically generates clean, conventional c
 
 - **One-command commit generation** - Generate and optionally auto-commit in a single step
 - **Smart PR descriptions** - Create comprehensive pull request descriptions from multiple commits
-- **Changelog automation** - Generate changelog entries from your current changes
-- **Multi-provider AI support** - Currently supports and works with OpenAI, Anthropic Claude, and Google Gemini
+- **Advanced changelog automation** - Generate version-aware changelogs with contributor tracking and commit linking
+- **Multi-provider AI support** - Works with OpenAI, Anthropic Claude, and Google Gemini
 - **Context-aware** - Add custom context to guide AI generation
 - **Flexible workflows** - Use with staged changes, commit history, or branch comparisons
+- **Semantic versioning** - Automatic version bumping based on conventional commits
 - **Zero configuration** - Works out of the box with environment variables
 
 ## 📦 Installation
@@ -117,7 +118,7 @@ feat: add user authentication system
 Generate a commit message and automatically stage and commit all changes:
 
 ```bash
-cg commit --auto-commit
+cg commit --auto
 ```
 
 This command will:
@@ -138,13 +139,13 @@ The AI will consider your context when crafting the commit message.
 
 ### Generate a Changelog Entry
 
-Create a changelog entry from your current changes:
+Create a changelog entry from your commit history:
 
 ```bash
-cg changelog
+cg changelog --from v1.0.0
 ```
 
-**Output example:**
+**Basic output example:**
 
 ```
 Generated Changelog:
@@ -153,8 +154,35 @@ Generated Changelog:
 - User authentication system with JWT support
 - Login and registration API endpoints
 
-### Changed
-- Updated session management logic
+### Fixed
+- Session timeout issues
+- Memory leak in background sync
+```
+
+### Advanced Changelog with Version Management
+
+Generate a complete changelog with version header, contributors, and commit links:
+
+```bash
+cg changelog --from v1.2.0 --ver "1.2.0" --ver-bump auto --contributors --links
+```
+
+**Advanced output example:**
+
+```
+## [1.3.0] - 2024-12-01 to 2024-12-15
+
+### Added
+- Real-time collaboration features
+- Export to PDF functionality
+
+### Fixed
+- Memory leak in background sync [abc1234]
+- Authentication timeout issues
+
+### Contributors
+- Alice Johnson <alice@example.com>
+- Bob Smith <bob@example.com>
 ```
 
 ### Generate a Pull Request Description
@@ -176,7 +204,7 @@ cg pr --base origin/develop
 **Include individual commit messages for more comprehensive analysis:**
 
 ```bash
-cg pr --include-commits
+cg pr --deep
 ```
 
 **Add context to your PR description:**
@@ -194,30 +222,126 @@ Generate a commit message from staged changes.
 **Options:**
 
 - `--context <text>` - Add context to guide message generation
-- `--auto-commit` - Automatically stage and commit with the generated message
+- `--auto` - Automatically stage and commit with the generated message
 
 **Examples:**
 
 ```bash
 cg commit
-cg commit --auto-commit
+cg commit --auto
 cg commit --context "Refactoring for performance"
-cg commit --context "Fixes #42" --auto-commit
+cg commit --context "Fixes #42" --auto
 ```
 
 ### `cg changelog`
 
-Generate a changelog entry from current changes.
+Generate a changelog entry from commit history with advanced version management.
 
 **Options:**
 
-- `--context <text>` - Add context to guide generation
+| Option              | Type    | Description                              | Example                        |
+| ------------------- | ------- | ---------------------------------------- | ------------------------------ |
+| `--from <ref>`      | string  | Start from commit/tag/branch             | `--from v1.0.0`                |
+| `--to <ref>`        | string  | End at commit/tag/branch (default: HEAD) | `--to v1.1.0`                  |
+| `--ver <version>`   | string  | Current/base version (e.g., 1.0.0)       | `--ver "1.0.0"`                |
+| `--ver-bump <type>` | string  | Version bump: auto, major, minor, patch  | `--ver-bump minor`             |
+| `--aud <type>`      | string  | Audience: technical, end-user, both      | `--aud end-user`               |
+| `--contributors`    | boolean | Show all contributors                    | `--contributors`               |
+| `--links`           | boolean | Include commit links                     | `--links`                      |
+| `--context <text>`  | string  | Additional context                       | `--context "Security release"` |
 
-**Examples:**
+**Basic Examples:**
 
 ```bash
-cg changelog
-cg changelog --context "Breaking changes in API v2"
+# Simple changelog from last tag
+cg changelog --from v1.0.0
+
+# With version header
+cg changelog --from v1.0.0 --ver "1.0.0"
+
+# Auto-bump version (patch/minor/major based on commits)
+cg changelog --from v1.0.0 --ver "1.0.0" --ver-bump auto
+
+# Explicit version bump
+cg changelog --from v1.0.0 --ver "1.0.0" --ver-bump minor
+
+# Full-featured release changelog
+cg changelog --from v1.0.0 --ver "1.0.0" --ver-bump auto --contributors --links
+```
+
+**Using Git References:**
+
+```bash
+# From a tag
+cg changelog --from v1.0.0
+
+# From a commit hash
+cg changelog --from abc1234
+
+# Between two tags
+cg changelog --from v1.0.0 --to v1.1.0
+
+# Last 10 commits
+cg changelog --from HEAD~10
+
+# From a branch
+cg changelog --from main
+```
+
+**Audience Targeting:**
+
+```bash
+# For end users (default) - plain language
+cg changelog --from v1.0.0 --aud end-user
+
+# For developers - technical details
+cg changelog --from v1.0.0 --aud technical
+
+# For both audiences - balanced
+cg changelog --from v1.0.0 --aud both
+```
+
+**Version Management:**
+
+```bash
+# Auto-detect version bump from commits
+cg changelog --from v1.5.0 --ver "1.5.0" --ver-bump auto
+
+# Explicit patch bump (1.5.0 → 1.5.1)
+cg changelog --from v1.5.0 --ver "1.5.0" --ver-bump patch
+
+# Minor version bump (1.5.0 → 1.6.0)
+cg changelog --from v1.5.0 --ver "1.5.0" --ver-bump minor
+
+# Major version bump (1.5.0 → 2.0.0)
+cg changelog --from v1.5.0 --ver "1.5.0" --ver-bump major
+```
+
+**Complete Examples:**
+
+```bash
+# Release changelog with all features
+cg changelog \
+  --from v2.0.0 \
+  --ver "2.0.0" \
+  --ver-bump auto \
+  --aud both \
+  --contributors \
+  --links \
+  --context "Major release with new authentication system"
+
+# Quick hotfix changelog
+cg changelog \
+  --from v1.5.2 \
+  --ver "1.5.2" \
+  --ver-bump patch \
+  --aud end-user
+
+# Internal development log
+cg changelog \
+  --from HEAD~20 \
+  --aud technical \
+  --contributors
 ```
 
 ### `cg pr`
@@ -228,14 +352,14 @@ Generate a pull request description from multiple commits.
 
 - `--base <branch>` - Base branch to compare against (default: `origin/main`)
 - `--context <text>` - Add context to guide description generation
-- `--include-commits` - Include individual commit messages in analysis for more comprehensive output
+- `--deep` - Include individual commit messages in analysis for more comprehensive output
 
 **Examples:**
 
 ```bash
 cg pr
 cg pr --base origin/develop
-cg pr --include-commits
+cg pr --deep
 cg pr --base main --context "Part of the Q4 authentication initiative"
 ```
 
@@ -248,58 +372,177 @@ cg pr --base main --context "Part of the Q4 authentication initiative"
 
 The tool uses different prompt strategies for commits, changelogs, and PR descriptions to ensure optimal results for each use case.
 
+## 📖 Understanding Git References
+
+The `--from` and `--to` options in `cg changelog` accept any Git reference:
+
+| Reference Type  | Example       | Description                             |
+| --------------- | ------------- | --------------------------------------- |
+| **Git tag**     | `v1.0.0`      | A tagged commit (must be created first) |
+| **Commit hash** | `abc1234`     | Short hash (7+ characters)              |
+| **Full hash**   | `abc123...`   | Full 40-character hash                  |
+| **Branch**      | `main`        | Branch name                             |
+| **Remote**      | `origin/main` | Remote tracking branch                  |
+| **Relative**    | `HEAD~5`      | 5 commits before HEAD                   |
+
+**Finding Git references:**
+
+```bash
+# List all tags
+git tag -l
+
+# Show recent commits with hashes
+git log --oneline -20
+
+# Show all branches
+git branch -a
+```
+
+**Important:** Git tags must exist before you can use them. Create tags with:
+
+```bash
+git tag v1.0.0
+```
+
 ## 🤔 When to Use Each Command
 
-| Command                   | When to Use                         | What It Analyzes             |
-| ------------------------- | ----------------------------------- | ---------------------------- |
-| `cg commit`               | Before staging changes              | Changes (git diff)           |
-| `cg commit --auto-commit` | Quick commits without manual review | Changes (auto-stages all)    |
-| `cg changelog`            | Documenting releases or updates     | Changes                      |
-| `cg pr`                   | Creating pull requests              | All commits between branches |
-| `cg pr --include-commits` | Complex PRs with many commits       | Commit messages + diffs      |
+| Command            | When to Use                         | What It Analyzes                   |
+| ------------------ | ----------------------------------- | ---------------------------------- |
+| `cg commit`        | Before committing changes           | Unstaged/staged changes (git diff) |
+| `cg commit --auto` | Quick commits without manual review | Changes (auto-stages all)          |
+| `cg changelog`     | Documenting releases or updates     | Commit history between references  |
+| `cg pr`            | Creating pull requests              | All commits between branches       |
+| `cg pr --deep`     | Complex PRs with many commits       | Commit messages + diffs            |
+
+## 💡 Changelog Use Cases
+
+### Pre-Release Review
+
+```bash
+# Check what will be in next release
+cg changelog --from v1.0.4 --ver "1.0.4" --ver-bump auto
+```
+
+### GitHub Release Notes
+
+```bash
+# Generate release notes file
+cg changelog \
+  --from v2.1.0 \
+  --ver "2.1.0" \
+  --ver-bump minor \
+  --aud end-user \
+  --contributors \
+  --links > RELEASE_NOTES.md
+```
+
+### Security Patch
+
+```bash
+cg changelog \
+  --from v1.8.3 \
+  --ver "1.8.3" \
+  --ver-bump patch \
+  --aud both \
+  --context "Security patch for CVE-2024-XXXXX" \
+  --links
+```
+
+### Feature Preview
+
+```bash
+# Show stakeholders what's coming
+cg changelog \
+  --from main \
+  --to feature/ai-assistant \
+  --aud end-user \
+  --context "Preview of upcoming AI assistant"
+```
+
+### Weekly Development Summary
+
+```bash
+cg changelog --from HEAD~20 --aud technical --contributors
+```
 
 ## ⚠️ Important Notes
 
-- **Unstaged changes required** - Make sure you have not yet staged your changes (`git add`) before running `cg commit` or `cg changelog`
+- **Changelog requires commit history** - Make sure you have committed your changes and have a reference point (tag, commit hash, or branch)
+- **Tags must exist** - `--from v1.0.0` only works if you've created that tag with `git tag v1.0.0`
+- **Commit hashes always work** - You can always use commit hashes from `git log` even without tags
+- **Version bumping requires --ver** - You must specify the current version with `--ver` to use `--ver-bump`
 - **Committed changes required for PRs** - Run `cg pr` after committing your changes to your feature branch
-- **Branch comparison** - `cg pr` compares your current branch against the specified base branch
 - **API costs** - Each generation uses your AI provider's API and may incur costs
-- **Review recommended** - Always review generated messages before using `--auto-commit`
+- **Review recommended** - Always review generated messages before using `--auto`
 
 ## 🎨 Best Practices
 
-1. **Review before auto-commit** - Run `cg commit` first to review, then use `--auto-commit` when confident
+### For Commits
+
+1. **Review before auto-commit** - Run `cg commit` first to review, then use `--auto` when confident
 2. **Stage intentionally** - Stage related changes together for more coherent commit messages
 3. **Use context** - Provide context for complex changes to get better results
-4. **Choose the right provider** - Different AI models have different strengths:
-   - OpenAI (GPT-4): Great all-around performance
-   - Anthropic (Claude): Excellent at understanding context and nuance
-   - Google (Gemini): Fast and cost-effective
 
-## 🐛 Troubleshooting
+### For Changelogs
 
-### "No changes detected"
+1. **Use semantic versioning** - Take advantage of `--ver-bump auto` for proper version management
+2. **Tag your releases** - Create git tags for important versions: `git tag v1.0.0`
+3. **Target your audience** - Use `--aud` to match your changelog to your readers
+4. **Link commits** - Enable `--links` for public repositories to help users trace changes
+5. **Show appreciation** - Use `--contributors` to acknowledge all contributors
 
-- Make sure you have staged changes: `git add .`
-- For PRs, ensure you have committed changes on your branch
+### For PRs
 
-### "API key not found"
+1. **Use --deep for complex PRs** - Include commit messages when your PR has many logical changes
+2. **Add context** - Explain the "why" behind the PR with `--context`
+3. **Review the output** - AI-generated descriptions are starting points - refine as needed
+
+### AI Provider Selection
+
+Different AI models have different strengths:
+
+- **OpenAI (GPT-4)**: Great all-around performance, excellent at following instructions
+- **Anthropic (Claude)**: Excellent at understanding context and nuance, very reliable
+- **Google (Gemini)**: Fast and cost-effective for simpler tasks
+
+## 🛠 Troubleshooting
+
+### Changelog Issues
+
+**"No commits found between v1.0.0 and HEAD"**
+
+- The tag doesn't exist. Check available tags with `git tag -l`
+- Create the tag: `git tag v1.0.0` or use a commit hash instead
+
+**"Error: --ver-bump requires --ver to be specified"**
+
+- You must provide the current version when using `--ver-bump`
+- Example: `--ver "1.0.0" --ver-bump auto`
+
+**"Could not detect repository URL for commit linking"**
+
+- No git remote configured. Add one: `git remote add origin <url>`
+- Or skip linking with: remove the `--links` flag
+
+### General Issues
+
+**"No changes detected"**
+
+- For `cg commit`: Make sure you have unstaged changes
+- For `cg changelog`: Ensure you have commits between your references
+- For PRs: Verify you have committed changes on your branch
+
+**"API key not found"**
 
 - Verify your `.env` file exists and contains the correct variables
-- Check that `AI_PROVIDER` matches your API key (e.g., if `AI_PROVIDER=openai`, you need `OPENAI_API_KEY`)
+- Check that `AI_PROVIDER` matches your API key
 - Ensure environment variables are loaded in your shell
 
-### "Commit failed"
+**"Commit failed"**
 
 - Check that you're in a git repository
 - Verify you have changes to commit
 - Ensure you have permission to commit to the current branch
-
-### PR command shows no changes
-
-- Make sure you're on a branch different from your base branch
-- Verify you have committed changes (not just staged)
-- Check that your base branch exists (e.g., `origin/main`)
 
 ## 🛣️ Roadmap
 
@@ -311,8 +554,10 @@ The tool uses different prompt strategies for commits, changelogs, and PR descri
 - [ ] Batch processing for multiple commits
 - [ ] VS Code extension integration
 - [ ] Git hooks integration
-- [ ] Changelog file auto-updater
+- [ ] Changelog file auto-updater (prepend to CHANGELOG.md)
 - [ ] Additional AI provider support
+- [ ] Changelog templates (Keep a Changelog, etc.)
+- [ ] Breaking change detection and migration guide generation
 
 ## 📄 License
 
@@ -328,7 +573,8 @@ If you encounter any issues or have questions:
 
 1. Check the troubleshooting section above
 2. Review your environment variable configuration
-3. Open an issue on the project repository
+3. Ensure git tags exist if using them in `--from` or `--to`
+4. Open an issue on the project repository
 
 ## ✨ Credits
 
@@ -342,4 +588,4 @@ Built with:
 
 ---
 
-**Made with ❤️ for the developer who value their time**
+**Made with ❤️ for developers who value their time**
