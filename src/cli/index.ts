@@ -63,7 +63,7 @@ async function executeChangelogGeneration(options: {
   try {
     log("Fetching commit history for changelog...", "info");
 
-    // Get commits with metadata
+    // ? Get commits with metadata
     const params: ChangelogOptions = {
       since: options.since,
       until: options.until,
@@ -78,7 +78,7 @@ async function executeChangelogGeneration(options: {
       return;
     }
 
-    // Calculate version
+    // ? Calculate version
     let targetVersion = options.version;
     if (options.version && options.versionBump) {
       targetVersion = calculateVersionBump(
@@ -89,19 +89,17 @@ async function executeChangelogGeneration(options: {
       log(`Version bump: ${options.version} → ${targetVersion}`, "info");
     }
 
-    // Get repo URL for commit linking
+    // ? Get repo URL
     let repoUrl: string | undefined;
     if (options.linkCommits) {
       const url = await getRepoUrl();
       if (url) {
         repoUrl = url;
         log(`Repository URL: ${url}`, "info");
-      } else {
-        log("Could not detect repository URL for commit linking.", "warn");
-      }
+      } else log("Could not detect repository URL for commit linking.", "warn");
     }
 
-    // Display metadata
+    // ? Metadata display
     log(`Date range: ${dateRange.from} to ${dateRange.to}`, "info");
     if (options.showContributors && contributors.length > 0) {
       log(`Contributors (${contributors.length}):`, "info");
@@ -110,7 +108,7 @@ async function executeChangelogGeneration(options: {
 
     log("\nGenerating changelog...", "info");
 
-    // Generate changelog
+    // ? Generate changelog
     const changelogOpts: ChangelogObject = {};
     if (targetVersion !== undefined) changelogOpts.version = targetVersion;
     if (options.audience !== undefined) changelogOpts.audience = options.audience;
@@ -129,7 +127,6 @@ async function executeChangelogGeneration(options: {
     log("\nGenerated Changelog:\n", "success");
     console.log(changelog);
 
-    // Display metadata footer
     if (options.showContributors && contributors.length > 0) {
       console.log("\n" + "=".repeat(80));
       console.log("Contributors:");
@@ -205,7 +202,6 @@ program
   .option("--link-commits", "Include commit links (requires remote repository)")
   .option("--context <text>", "Additional context for the generation")
   .action((opt) => {
-    // Validate version-bump requires version
     if (opt.versionBump && opt.versionBump !== "auto" && !opt.version) {
       log("Error: --version-bump requires --version to be specified", "error");
       process.exit(1);

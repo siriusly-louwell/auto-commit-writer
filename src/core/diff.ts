@@ -115,8 +115,7 @@ export async function getChangelogCommits(options: ChangelogOptions): Promise<{
 
     if (log.all.length === 0)
       throw new Error(
-        `No commits found${options.since ? ` since ${options.since}` : ""}${options.until ? ` until ${options.until}` : ""
-        }`
+        `No commits found${options.since ? ` since ${options.since}` : ""}${options.until ? ` until ${options.until}` : ""}`
       );
 
     // Get unique contributors
@@ -236,13 +235,9 @@ export function calculateVersionBump(
   const hasFeat = /^feat(\(.*?\))?:/m.test(commits);
   const hasFix = /^fix(\(.*?\))?:/m.test(commits);
 
-  if (hasBreaking) {
-    return `${major + 1}.0.0`;
-  } else if (hasFeat) {
-    return `${major}.${minor + 1}.0`;
-  } else if (hasFix) {
-    return `${major}.${minor}.${patch + 1}`;
-  }
+  if (hasBreaking) return `${major + 1}.0.0`;
+  else if (hasFeat) return `${major}.${minor + 1}.0`;
+  else if (hasFix) return `${major}.${minor}.${patch + 1}`;
 
   // Default to patch if no conventional commits detected
   return `${major}.${minor}.${patch + 1}`;
