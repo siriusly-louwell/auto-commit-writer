@@ -118,28 +118,22 @@ export async function getChangelogCommits(options: ChangelogOptions): Promise<{
         `No commits found${options.since ? ` since ${options.since}` : ""}${options.until ? ` until ${options.until}` : ""}`
       );
 
-    // Get unique contributors
     const contributorSet = new Set<string>();
     log.all.forEach((commit) => {
       contributorSet.add(`${commit.author_name} <${commit.author_email}>`);
     });
-    const contributors = Array.from(contributorSet);
 
-    // Get date range
+    const contributors = Array.from(contributorSet);
     const dates = log.all.map((c) => new Date(c.date));
     const oldestDate = new Date(Math.min(...dates.map((d) => d.getTime())));
     const newestDate = new Date(Math.max(...dates.map((d) => d.getTime())));
 
-    // Format commits
     let formattedCommits = "";
     for (const commit of log.all) {
       formattedCommits += `\n${"=".repeat(80)}\n`;
       formattedCommits += `Commit: ${commit.hash.substring(0, 7)}`;
 
-      if (options.linkCommits) {
-        // Add full hash for linking purposes
-        formattedCommits += ` (${commit.hash})`;
-      }
+      if (options.linkCommits) formattedCommits += ` (${commit.hash})`;
 
       formattedCommits += `\n`;
       formattedCommits += `Author: ${commit.author_name} <${commit.author_email}>\n`;
@@ -174,24 +168,17 @@ export async function getRepoUrl(): Promise<string | null> {
 
     if (remotes.length === 0) return null;
 
-    // Prefer 'origin' remote
     const origin = remotes.find((r) => r.name === "origin") || remotes[0];
 
     if (!origin || !origin.refs.fetch) return null;
 
-    // Convert SSH or HTTPS URLs to web URLs
     let url = origin.refs.fetch;
 
-    // SSH format: git@github.com:user/repo.git
-    if (url.startsWith("git@")) {
+    if (url.startsWith("git@"))
       url = url
         .replace(/^git@([^:]+):/, "https://$1/")
         .replace(/\.git$/, "");
-    }
-    // HTTPS format: https://github.com/user/repo.git
-    else if (url.endsWith(".git")) {
-      url = url.replace(/\.git$/, "");
-    }
+    else if (url.endsWith(".git")) url = url.replace(/\.git$/, "");
 
     return url;
   } catch (error) {
@@ -211,7 +198,7 @@ export function calculateVersionBump(
   currentVersion: string,
   bumpType: "auto" | "major" | "minor" | "patch" = "auto"
 ): string {
-  const parts = currentVersion.split(".").map(Number);
+  const parts = currentVersion.slice(1).split(".").map(Number);
   const major = parts[0] ?? 0;
   const minor = parts[1] ?? 0;
   const patch = parts[2] ?? 0;
@@ -219,26 +206,25 @@ export function calculateVersionBump(
   if (bumpType !== "auto") {
     switch (bumpType) {
       case "major":
-        return `${major + 1}.0.0`;
+        return `v${major + 1}.0.0`;
       case "minor":
-        return `${major}.${minor + 1}.0`;
+        return `v${major}.${minor + 1}.0`;
       case "patch":
-        return `${major}.${minor}.${patch + 1}`;
+        return `v${major}.${minor}.${patch + 1}`;
     }
   }
 
-  // Auto-detect from commit messages
+  // ? Default to auto-detection
   const hasBreaking =
     /BREAKING CHANGE:|breaking:/i.test(commits) ||
-    commits.includes("!:"); // conventional commit breaking change marker
+    commits.includes("!:");
 
   const hasFeat = /^feat(\(.*?\))?:/m.test(commits);
   const hasFix = /^fix(\(.*?\))?:/m.test(commits);
 
-  if (hasBreaking) return `${major + 1}.0.0`;
-  else if (hasFeat) return `${major}.${minor + 1}.0`;
-  else if (hasFix) return `${major}.${minor}.${patch + 1}`;
+  if (hasBreaking) return `v${major + 1}.0.0`;
+  else if (hasFeat) return `v${major}.${minor + 1}.0`;
+  else if (hasFix) return `v${major}.${minor}.${patch + 1}`;
 
-  // Default to patch if no conventional commits detected
-  return `${major}.${minor}.${patch + 1}`;
+  return `v${major}.${minor}.${patch + 1}`;
 }

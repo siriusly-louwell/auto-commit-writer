@@ -177,44 +177,44 @@ program
   .command("commit")
   .description("Generate a commit message from the current diff.")
   .option("--context <text>", "Additional context for the generation")
-  .option("--auto-commit", "Automatically stage and commit changes")
+  .option("--auto", "Automatically stage and commit changes")
   .action((opt) =>
-    executeGeneration("commit", "Commit Message", { autoCommit: opt.autoCommit })
+    executeGeneration("commit", "Commit Message", { autoCommit: opt.auto })
   );
 
 program
   .command("changelog")
   .description("Generate changelog from commit history with version management.")
-  .option("--since <ref>", "Start from this commit/tag/branch (e.g., v1.0.0, HEAD~5)")
-  .option("--until <ref>", "End at this commit/tag/branch (default: HEAD)")
-  .option("--version <version>", "Current/base version for the changelog (e.g., 1.0.0)")
+  .option("--from <ref>", "Start from this commit/tag/branch (e.g., v1.0.0, HEAD~5)")
+  .option("--to <ref>", "End at this commit/tag/branch (default: HEAD)")
+  .option("--ver <version>", "Current/base version for the changelog (e.g., 1.0.0)")
   .option(
-    "--version-bump <type>",
-    "Semantic version bump type: auto, major, minor, or patch (requires --version)",
+    "--ver-bump <type>",
+    "Semantic version bump type: auto, major, minor, or patch (requires --ver)",
     "auto"
   )
   .option(
-    "--audience <type>",
+    "--aud <type>",
     "Target audience: technical, end-user, or both (default: end-user)",
     "end-user"
   )
-  .option("--show-contributors", "List all contributors in the changelog")
-  .option("--link-commits", "Include commit links (requires remote repository)")
+  .option("--contributors", "List all contributors in the changelog")
+  .option("--links", "Include commit links (requires remote repository)")
   .option("--context <text>", "Additional context for the generation")
   .action((opt) => {
-    if (opt.versionBump && opt.versionBump !== "auto" && !opt.version) {
-      log("Error: --version-bump requires --version to be specified", "error");
+    if (opt.verBump && opt.verBump !== "auto" && !opt.ver) {
+      log("Error: --ver-bump requires --ver to be specified", "error");
       process.exit(1);
     }
 
     executeChangelogGeneration({
-      since: opt.since,
-      until: opt.until,
-      version: opt.version,
-      versionBump: opt.versionBump,
-      audience: opt.audience,
-      showContributors: opt.showContributors,
-      linkCommits: opt.linkCommits,
+      since: opt.from,
+      until: opt.to,
+      version: opt.ver,
+      versionBump: opt.verBump,
+      audience: opt.aud,
+      showContributors: opt.contributors,
+      linkCommits: opt.links,
       context: opt.context,
     });
   });
@@ -229,14 +229,14 @@ program
   )
   .option("--context <text>", "Additional context for the generation")
   .option(
-    "--include-commits",
+    "--deep",
     "Include individual commit messages in the analysis (more comprehensive)"
   )
   .action((opt) =>
     executePRGeneration({
       base: opt.base,
       context: opt.context,
-      includeCommits: opt.includeCommits,
+      includeCommits: opt.deep,
     })
   );
 
