@@ -8,7 +8,7 @@ import type { ChangelogObject, ChangelogOptions } from "../types.js";
 program
   .name("cg")
   .description("AI-powered commit messages, PR descriptions, and changelog generation - all from your command line.")
-  .version("0.1.3");
+  .version("2.0.0");
 
 const git = simpleGit();
 
