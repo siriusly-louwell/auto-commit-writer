@@ -95,7 +95,7 @@ $env:OPENAI_API_KEY="sk-..."
 
 ### Generate a Commit Message
 
-Generate a commit message from your staged changes:
+Generate a commit message from unstaged changes:
 
 ```bash
 cg commit
@@ -217,7 +217,7 @@ cg pr --context "This PR implements the new design system discussed in RFC #456"
 
 ### `cg commit`
 
-Generate a commit message from staged changes.
+Generate a commit message from unstaged changes.
 
 **Options:**
 
@@ -406,13 +406,13 @@ git tag v1.0.0
 
 ## 🤔 When to Use Each Command
 
-| Command            | When to Use                         | What It Analyzes                   |
-| ------------------ | ----------------------------------- | ---------------------------------- |
-| `cg commit`        | Before committing changes           | Unstaged/staged changes (git diff) |
-| `cg commit --auto` | Quick commits without manual review | Changes (auto-stages all)          |
-| `cg changelog`     | Documenting releases or updates     | Commit history between references  |
-| `cg pr`            | Creating pull requests              | All commits between branches       |
-| `cg pr --deep`     | Complex PRs with many commits       | Commit messages + diffs            |
+| Command            | When to Use                         | What It Analyzes                  |
+| ------------------ | ----------------------------------- | --------------------------------- |
+| `cg commit`        | Before committing changes           | Unstaged changes (git diff)       |
+| `cg commit --auto` | Quick commits without manual review | Changes (auto-stages all)         |
+| `cg changelog`     | Documenting releases or updates     | Commit history between references |
+| `cg pr`            | Creating pull requests              | All commits between branches      |
+| `cg pr --deep`     | Complex PRs with many commits       | Commit messages + diffs           |
 
 ## 💡 Changelog Use Cases
 
