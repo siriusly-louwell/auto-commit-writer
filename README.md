@@ -561,7 +561,7 @@ Different AI models have different strengths:
 
 ## 📄 License
 
-This project is currently unlicensed. Please contact the author for usage permissions.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🤝 Contributing
 
